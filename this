@@ -1,0 +1,31 @@
+import pandas as pd
+import numpy as np
+
+# Sample DataFrame
+data = {
+    'Column1': [1, 2, 3, np.nan, np.nan, np.nan, 4, 5, 6, np.nan, np.nan, 7, 8, 9],
+    'Column2': ['A', 'B', 'C', np.nan, np.nan, np.nan, 'D', 'E', 'F', np.nan, np.nan, 'G', 'H', 'I']
+}
+df = pd.DataFrame(data)
+
+# Function to split the DataFrame
+def split_dataframe(df):
+    # Identify indices where all columns are NaN
+    indices = df.index[df.isna().all(axis=1)].tolist()
+    
+    # Add the start and end indices
+    start = 0
+    tables = []
+    for end in indices + [len(df)]:
+        if start != end:
+            tables.append(df.iloc[start:end].dropna(how='all'))
+        start = end + 1
+    
+    return tables
+
+# Splitting the DataFrame
+tables = split_dataframe(df)
+
+# Display each table
+for i, table in enumerate(tables, 1):
+    print(f"Table {i}:\n{table}\n")
